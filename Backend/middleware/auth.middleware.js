@@ -9,8 +9,7 @@ module.exports.authUser = async (req, res, next) => {
 
         const token = req.cookies.token || (req.headers.authorization ? req.headers.authorization.split(' ')[1] : undefined);
 
-        if (!token) { // have not token 
-            console.log("Not have token ");
+        if (!token) { // have not token  
             return res.status(401).json({
                 message: "Unauthorized"
             });
@@ -18,11 +17,10 @@ module.exports.authUser = async (req, res, next) => {
 
         // Check blacklisted 
         const isBlackListed = await userModel.findOne({ token: token });
-        if (isBlackListed) {
-            console.log("blacklisted ");
+        if (isBlackListed) { 
             return res.status(401).json({ message: "Unauthorized" });
         }
-        console.log("Else errro ");
+       
 
         // Verify token
         const decode = jwt.verify(token, process.env.JWT_SECRET); // give id 
@@ -38,8 +36,7 @@ module.exports.authUser = async (req, res, next) => {
     }
     catch (err) {
         return res.status(401).json({
-            message: "Unauthorized",
-            Error: err
+            message: "Unauthorized"
         });
     }
 }
