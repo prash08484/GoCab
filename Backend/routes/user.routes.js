@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { body } = require('express-validator');
-const user = require('../controllers/user.controller');
+const userController = require('../controllers/user.controller');
 
 // express-validator is used to validate data that filled up
 
