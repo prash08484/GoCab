@@ -120,3 +120,77 @@ Authenticates a user with email and password, returning the user object along wi
 **Notes:**
 - The password is compared securely with the hashed password in the database
 - A JWT authentication token is generated and returned upon successful login
+
+### Get User Profile
+**Endpoint:** `GET /user/profile`
+
+**Description:**  
+Retrieves the profile information of the currently authenticated user.
+
+**Authentication:**  
+Requires a valid JWT token in the request, either as:
+- `Authorization` header with format `Bearer <token>`
+- `token` cookie
+
+**Response:**
+- **Status 200 OK** - Profile retrieved successfully
+```json
+{
+  "fullname": {
+    "firstname": "John",
+    "lastname": "Doe"
+  },
+  "email": "john.doe@example.com",
+  "_id": "user_id_here",
+  // Other user fields (password excluded)
+}
+```
+
+- **Status 401 Unauthorized** - Invalid or missing authentication token
+```json
+{
+  "message": "Unauthorized"
+}
+```
+
+**Notes:**
+- This endpoint requires authentication via the `authUser` middleware
+- The user data is retrieved based on the ID extracted from the JWT token
+
+### Logout User
+**Endpoint:** `GET /user/logout`
+
+**Description:**  
+Logs out the currently authenticated user by clearing the authentication token cookie and blacklisting the token.
+
+**Authentication:**  
+Requires a valid JWT token in the request, either as:
+- `Authorization` header with format `Bearer <token>`
+- `token` cookie
+
+**Response:**
+- **Status 200 OK** - Logout successful
+```json
+{
+  "message": "Logged Out"
+}
+```
+
+- **Status 401 Unauthorized** - Invalid or missing authentication token
+```json
+{
+  "message": "Unauthorized"
+}
+```
+
+- **Status 500 Internal Server Error** - Error during logout process
+```json
+{
+  "message": "Error logging out"
+}
+```
+
+**Notes:**
+- This endpoint requires authentication via the `authUser` middleware
+- The token is added to a blacklist to prevent reuse
+- Blacklisted tokens are automatically removed after 24 hours

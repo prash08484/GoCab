@@ -75,7 +75,7 @@ module.exports.logoutUser = async (req, res, next) => {
         await blackListTokenModel.create({ token });
         res.status(200).json({ message: "Logged Out" });
     } catch (error) {
-        res.status(500).json({ message: "Error logging out", error: error.message });
+        res.status(500).json({ message: "Error logging out"});
     }
 }
 
