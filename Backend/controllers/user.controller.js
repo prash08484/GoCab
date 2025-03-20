@@ -1,8 +1,9 @@
 const userModel = require('../models/model.user');
 const userServices = require('../services/user.services');
 const { validationResult } = require('express-validator');
+const blackListTokenModel = require('../models/blacklistToken.model');
 
-// this used to create user  
+//  to create user  
 module.exports.registerUser = async (req, res, next) => {
     // react to express-validation of routes 
     const errors = validationResult(req);
@@ -30,8 +31,9 @@ module.exports.registerUser = async (req, res, next) => {
 
 }
 
-// login user 
+// to login user 
 module.exports.loginUser = async (req, res, next) => {
+
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
@@ -55,14 +57,28 @@ module.exports.loginUser = async (req, res, next) => {
 
     // everything is ok 
     const token = user.generateAuthTokens();
-    res.status(200).cookie('cookie', token).json({ token, user });
-    // login then attack cookies with it 
-    
-
+    res.status(200).cookie('token', token).json({ token, user });
+    // login then attach cookies with it 
 }
 
+// to fetch profile
 module.exports.getUserProfile = async (req, res, next) => {
     // use middleware auth to find user using current token 
     res.status(200).json(req.user);
+}
 
-};
+// to logout user 
+module.exports.logoutUser = async (req, res, next) => {
+    try {
+        res.clearCookie('token');
+        const token = req.cookies.token || (req.headers.authorization ? req.headers.authorization.split(' ')[1] : undefined);
+        await blackListTokenModel.create({ token });
+        res.status(200).json({ message: "Logged Out" });
+    } catch (error) {
+        res.status(500).json({ message: "Error logging out", error: error.message });
+    }
+}
+
+
+ 
+

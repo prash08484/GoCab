@@ -2,7 +2,7 @@
 // so that databse no more filled with useless token
 
 const mongoose = require('mongoose');
-const blackListTokenSchema = mongoose.Schema({
+const blacklistTokenSchema = mongoose.Schema({
     token: {
         type: String,
         required: true,
@@ -15,4 +15,4 @@ const blackListTokenSchema = mongoose.Schema({
     }
 });
 
-module.exports = mongoose.model('BlackListToken', blackListTokenSchema);
+module.exports = mongoose.model('BlacklistToken', blacklistTokenSchema);

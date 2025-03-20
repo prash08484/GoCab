@@ -4,6 +4,7 @@ const { body } = require('express-validator');
 const userController = require('../controllers/user.controller');
 const authMiddleware = require('../middleware/auth.middleware');
 
+
 // express-validator is used to validate data that filled up
 
 router.post('/register', [
@@ -17,7 +18,6 @@ router.post('/register', [
     userController.registerUser
 );
 
-
 router.post('/login', [
     body('email').isEmail().withMessage("Invalid Email"),
     body('password').isLength({ min: 6 }).withMessage("Minimum length of Password should be 6")
@@ -27,5 +27,6 @@ router.post('/login', [
 
 router.get('/profile',authMiddleware.authUser,userController.getUserProfile);
 
+router.get('/logout',authMiddleware.authUser,userController.logoutUser);
 
 module.exports = router;
