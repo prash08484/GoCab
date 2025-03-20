@@ -25,7 +25,7 @@ module.exports.registerUser = async (req, res, next) => {
         password: hashedPassword
     });
 
-    const token = user.generateAuthTokens(user);
+    const token = user.generateAuthTokens();
     res.status(201).json({ user, token });
 
 }
@@ -41,21 +41,28 @@ module.exports.loginUser = async (req, res, next) => {
 
     // checking email exist in db or not 
     const user = await userModel.findOne({ email }).select('+password');
-    
+
     if (!user) {
-        res.status(401).json({ message: "Invalid email or Password " });
+        return res.status(401).json({ message: "Invalid email or Password " });
     }
-    
+
     // checking respective email , pass is match or not  
     const isMatch = await user.comparePassword(password);
 
     if (!isMatch) {
-        res.status(401).json({ message: "Invalid email or Password " });
+        return res.status(401).json({ message: "Invalid email or Password " });
     }
-   
+
     // everything is ok 
     const token = user.generateAuthTokens();
-    res.status(200).json({ token, user });
+    res.status(200).cookie('cookie', token).json({ token, user });
+    // login then attack cookies with it 
+    
 
 }
 
+module.exports.getUserProfile = async (req, res, next) => {
+    // use middleware auth to find user using current token 
+    res.status(200).json(req.user);
+
+};

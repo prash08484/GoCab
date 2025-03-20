@@ -1,5 +1,6 @@
 const dotenv = require('dotenv'); // to store variable that's you don't want to be public
 dotenv.config();
+const cookieParser = require('cookie-parser');
 const express = require('express');
 const cors = require('cors'); // cross operation resource sharing 
 const app = express();
@@ -11,6 +12,7 @@ const userRoutes = require('./routes/user.routes');
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 // This middleware parses incoming request bodies with 
 // URL-encoded data (typically from HTML forms) and makes 
 // it available under req.body.
