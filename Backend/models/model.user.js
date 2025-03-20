@@ -12,18 +12,18 @@ const userSchema = new mongoose.Schema({
             minlength: [3, 'First name should be minimum 3 character']
         },
         lastname: {
-            tyep: String,
+            type: String,
             minlength: [3, 'Last name should be minimum 3 character']
         }
     },
     email: {
-        type: Email,
-        requried: true,
-        minlength: [10, 'Minimum lenght of mail is 10 '],
+        type: String,
+        required: true,
+        minlength: [10, 'Minimum length of mail is 10 '],
         unique: true,
     },
     password: {
-        requried: true,
+        required: true,
         type: String,
         select: false // it ensure when we search for user then didn't share password
     },
