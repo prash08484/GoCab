@@ -1,8 +1,8 @@
 const userModel = require('../models/model.user');
 const userServices = require('../services/user.services');
-const {validationResult} = require('express-validator');
+const { validationResult } = require('express-validator');
 
-// console.log(validationResults)
+// this used to create user  
 module.exports.registerUser = async (req, res, next) => {
     // react to express-validation of routes 
     const errors = validationResult(req);
@@ -19,10 +19,10 @@ module.exports.registerUser = async (req, res, next) => {
     // finally create a real user  
 
     const user = await userServices.createUser({
-        firstname:fullname.firstname,
-        lastname:fullname.lastname,
+        firstname: fullname.firstname,
+        lastname: fullname.lastname,
         email,
-        password:hashedPassword
+        password: hashedPassword
     });
 
     const token = user.generateAuthTokens(user);
@@ -30,5 +30,32 @@ module.exports.registerUser = async (req, res, next) => {
 
 }
 
-// this used to create user 
+// login user 
+module.exports.loginUser = async (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    const { password, email } = req.body;
+
+    // checking email exist in db or not 
+    const user = await userModel.findOne({ email }).select('+password');
+    
+    if (!user) {
+        res.status(401).json({ message: "Invalid email or Password " });
+    }
+    
+    // checking respective email , pass is match or not  
+    const isMatch = await user.comparePassword(password);
+
+    if (!isMatch) {
+        res.status(401).json({ message: "Invalid email or Password " });
+    }
+   
+    // everything is ok 
+    const token = user.generateAuthTokens();
+    res.status(200).json({ token, user });
+
+}
 

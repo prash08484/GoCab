@@ -6,15 +6,25 @@ const userController = require('../controllers/user.controller');
 // express-validator is used to validate data that filled up
 
 router.post('/register', [
-    body('email').isEmail().withMessage("Invalid Eamil"),
+    body('email').isEmail().withMessage("Invalid Email"),
     body('password').isLength({ min: 6 }).withMessage(
         "Minimum length of Password should be 6"),
     body('fullname.firstname').isLength({ min: 3 }).withMessage(
         "Minimum length of char should be 3"),
 ],
-// if any thing happen then you can react below module function : userController.registerUser
+    // if any thing happen then you can react below module function : userController.registerUser
     userController.registerUser
 );
+
+
+router.post('/login', [
+    body('email').isEmail().withMessage("Invalid Email"),
+    body('password').isLength({ min: 6 }).withMessage("Minimum length of Password should be 6")
+],
+    userController.loginUser
+);
+
+
 
 
 module.exports = router;
