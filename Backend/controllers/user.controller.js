@@ -5,7 +5,7 @@ const blackListTokenModel = require('../models/blacklistToken.model');
 
 //  to create user  
 module.exports.registerUser = async (req, res, next) => {
-    // react to express-validation of routes 
+    // reply to express-validation of routes 
     const errors = validationResult(req);
     if (!errors.isEmpty()) { // there is any error in validation 
         return res.status(400).json({ errors: errors.array() });
@@ -15,6 +15,13 @@ module.exports.registerUser = async (req, res, next) => {
 
     const { fullname, password, email } = req.body;
     // hash the password before using it 
+
+    // check mail exist in db already 
+    const isUserExists = userModel.findOne({ email });
+    if (isUserExists) {
+        return res.status(400).json({ message: "User Already Exists " });
+    }
+
     const hashedPassword = await userModel.hashPassword(password);
 
     // finally create a real user  
@@ -75,10 +82,10 @@ module.exports.logoutUser = async (req, res, next) => {
         await blackListTokenModel.create({ token });
         res.status(200).json({ message: "Logged Out" });
     } catch (error) {
-        res.status(500).json({ message: "Error logging out"});
+        res.status(500).json({ message: "Error logging out" });
     }
 }
 
 
- 
+
 

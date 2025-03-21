@@ -9,11 +9,9 @@ const authMiddleware = require('../middleware/auth.middleware');
 
 router.post('/register', [
     body('email').isEmail().withMessage("Invalid Email"),
-    body('password').isLength({ min: 6 }).withMessage(
-        "Minimum length of Password should be 6"),
-    body('fullname.firstname').isLength({ min: 3 }).withMessage(
-        "Minimum length of char should be 3"),
-],
+    body('password').isLength({ min: 6 }).withMessage("Minimum length of Password should be 6"),
+    body('fullname.firstname').isLength({ min: 3 }).withMessage("Minimum length of char should be 3"),
+   ],
     // if any thing happen then you can react below module function : userController.registerUser
     userController.registerUser
 );
