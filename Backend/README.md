@@ -194,3 +194,88 @@ Requires a valid JWT token in the request, either as:
 - This endpoint requires authentication via the `authUser` middleware
 - The token is added to a blacklist to prevent reuse
 - Blacklisted tokens are automatically removed after 24 hours
+
+## Captain API Endpoints
+
+### Register Captain
+**Endpoint:** `POST /captain/register`
+
+**Description:**  
+Creates a new captain account. The endpoint validates the input data and returns the created captain object along with an authentication token upon successful registration.
+
+**Request Body:**
+```json
+{
+  "fullname": {
+    "firstname": "John",     // Required, minimum 3 characters
+    "lastname": "Doe"        // Optional, minimum 3 characters if provided
+  },
+  "email": "john.doe@example.com",  // Required, valid email format
+  "password": "password123",        // Required
+  "vehicle": {
+    "color": "Black",             // Required, minimum 3 characters
+    "plate": "ABC-123",           // Required, minimum 3 characters, must be unique
+    "vehicleType": "car",         // Required, one of: "motorcycle", "car", "auto"
+    "capacity": 4                 // Required, minimum 1
+  }
+}
+```
+
+**Response:**
+- **Status 200 OK** - Captain successfully created
+```json
+{
+  "captain": {
+    "fullname": {
+      "firstname": "John",
+      "lastname": "Doe"
+    },
+    "email": "john.doe@example.com",
+    "vehicle": {
+      "color": "Black",
+      "plate": "ABC-123",
+      "vehicleType": "car",
+      "capacity": 4
+    },
+    "status": "inactive",
+    "_id": "captain_id_here"
+    // Other captain fields (password excluded)
+  },
+  "token": "jwt_auth_token_here"
+}
+```
+
+- **Status 400 Bad Request** - Validation error
+```json
+{
+  "errors": [
+    {
+      "msg": "Invalid Email",
+      "path": "email",
+      "location": "body"
+    }
+    // Other validation errors if present
+  ]
+}
+```
+
+- **Status 400 Bad Request** - Captain already exists
+```json
+{
+  "message": "Captain Already Exists"
+}
+```
+
+**Validation Rules:**
+- Email must be a valid email format and unique
+- First name must be at least 3 characters long
+- Last name, if provided, should be at least 3 characters long
+- Vehicle color must be at least 3 characters long
+- Vehicle plate must be at least 3 characters long and unique
+- Vehicle type must be one of: "motorcycle", "car", "auto"
+- Vehicle capacity must be at least 1
+
+**Notes:**
+- The password is hashed before storing in the database
+- A JWT authentication token is generated and returned upon successful registration
+- The captain status is set to "inactive" by default

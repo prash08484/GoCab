@@ -40,6 +40,3 @@ module.exports.registerCaptain = async (req, res, next) => {
 }
 
 
-
-
-
