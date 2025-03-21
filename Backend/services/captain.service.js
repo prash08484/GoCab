@@ -1,3 +1,4 @@
+// used to create captain
 const captainModel = require('../models/model.captain');
 
 module.exports.createCaptain = async (
